@@ -11,10 +11,13 @@
         <module name="Recipes1.Recipes-task-build-test-results.main" />
         <module name="Recipes1.Recipes-task-build-reports-tests.main" />
         <module name="Recipes1.Recipes-task-build-tmp.test" />
+        <module name="Recipes1.Topics-Runtime_type_checking-Theory.test" />
         <module name="Recipes1.Recipes-task-build-generated-sources-annotationProcessor-java.test" />
+        <module name="Recipes1.Topics-Runtime_type_checking-Sort_out_the_classes.main" />
         <module name="Recipes1.util.main" />
         <module name="Recipes1.Recipes-task-build-classes-java.main" />
         <module name="Recipes1.Recipes-task-build-tmp.main" />
+        <module name="Recipes1.Topics-Runtime_type_checking-Sort_out_the_classes.test" />
         <module name="Recipes1.util.test" />
         <module name="Recipes1.Recipes-task-build-classes-java.test" />
         <module name="Recipes1.Recipes-task-build-generated-sources-annotationProcessor-java.main" />
@@ -23,6 +26,7 @@
         <module name="Recipes1.Recipes-task-build-test-results.test" />
         <module name="Recipes1.Recipes-task-build-generated-sources-headers-java.test" />
         <module name="Recipes1.Recipes-task-build-reports-tests.test" />
+        <module name="Recipes1.Topics-Runtime_type_checking-Theory.main" />
         <module name="Recipes1.Recipes-task.main" />
       </profile>
     </annotationProcessing>
@@ -34,6 +38,8 @@
       <module name="Recipes1.Recipes-task-build-test-results.main" target="11" />
       <module name="Recipes1.Recipes-task-build-tmp.main" target="11" />
       <module name="Recipes1.Recipes-task.main" target="11" />
+      <module name="Recipes1.Topics-Runtime_type_checking-Sort_out_the_classes.main" target="11" />
+      <module name="Recipes1.Topics-Runtime_type_checking-Theory.main" target="11" />
       <module name="Recipes1.util.main" target="11" />
     </bytecodeTargetLevel>
   </component>

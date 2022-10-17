@@ -193,6 +193,142 @@ files:
         }
     }
   learner_created: false
-feedback_link: https://hyperskill.org/projects/180/stages/918/implement#comment
-status: Unchecked
+- name: src/recipes/controllers/RecipeController.java
+  visible: true
+  text: |
+    package recipes.controllers;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.*;
+    import recipes.domain.Recipe;
+    import recipes.services.RecipeServiceImpl;
+
+    @RestController
+    @RequestMapping("/api")
+    public class RecipeController {
+        private final RecipeServiceImpl service;
+
+        public RecipeController(@Autowired RecipeServiceImpl service) {
+            this.service = service;
+        }
+
+        @GetMapping("/recipe")
+        public ResponseEntity<Recipe> getRecipe() {
+            return ResponseEntity.ok().body(service.getRecipe());
+        }
+
+        @PostMapping("/recipe")
+        public ResponseEntity<Recipe> addRecipe(@RequestBody Recipe recipe) {
+            service.saveRecipe(recipe);
+            return ResponseEntity.ok().build();
+        }
+    }
+  learner_created: true
+- name: src/recipes/repo/RecipeRepository.java
+  visible: true
+  text: |
+    package recipes.repo;
+
+    import recipes.domain.Recipe;
+
+    public interface RecipeRepository {
+        Recipe get();
+
+        void add(Recipe recipe);
+    }
+  learner_created: true
+- name: src/recipes/services/RecipeServiceImpl.java
+  visible: true
+  text: |
+    package recipes.services;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.stereotype.Service;
+    import recipes.domain.Recipe;
+    import recipes.repo.RecipeRepository;
+
+    @Service
+    public class RecipeServiceImpl implements RecipeService {
+        private final RecipeRepository recipeRepository;
+
+        public RecipeServiceImpl(@Autowired RecipeRepository recipeRepository) {
+            this.recipeRepository = recipeRepository;
+        }
+
+        @Override
+        public void saveRecipe(Recipe recipe) {
+            recipeRepository.add(recipe);
+        }
+
+        @Override
+        public Recipe getRecipe() {
+            return recipeRepository.get();
+        }
+    }
+  learner_created: true
+- name: src/recipes/domain/Recipe.java
+  visible: true
+  text: |
+    package recipes.domain;
+
+    import lombok.AllArgsConstructor;
+    import lombok.Data;
+    import lombok.NoArgsConstructor;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class Recipe {
+        String name;
+        String description;
+        String ingredients;
+        String directions;
+    }
+  learner_created: true
+- name: src/recipes/services/RecipeService.java
+  visible: true
+  text: |
+    package recipes.services;
+
+    import recipes.domain.Recipe;
+
+    interface RecipeService {
+        void saveRecipe(Recipe recipe);
+
+        Recipe getRecipe();
+    }
+  learner_created: true
+- name: src/recipes/repo/RecipeRepositoryImpl.java
+  visible: true
+  text: |
+    package recipes.repo;
+
+    import org.springframework.stereotype.Repository;
+    import recipes.domain.Recipe;
+
+    @Repository
+    public class RecipeRepositoryImpl implements RecipeRepository {
+        private Recipe recipe = new Recipe();
+
+        @Override
+        public Recipe get() {
+            return recipe;
+        }
+
+        @Override
+        public void add(Recipe recipe) {
+            this.recipe = new Recipe(
+                    recipe.getName(),
+                    recipe.getDescription(),
+                    recipe.getIngredients(),
+                    recipe.getDirections());
+        }
+    }
+  learner_created: true
+feedback_link: https://hyperskill.org/learn/step/13089#comment
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Mon, 17 Oct 2022 19:58:32 UTC
 record: -1

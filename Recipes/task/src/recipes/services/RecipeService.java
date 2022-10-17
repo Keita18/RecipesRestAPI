@@ -3,7 +3,7 @@ package recipes.services;
 import recipes.domain.Recipe;
 
 interface RecipeService {
-    void saveRecipe(Recipe recipe);
+    Long saveRecipe(Recipe recipe);
 
-    Recipe getRecipe();
+    Recipe getRecipe(Long id);
 }

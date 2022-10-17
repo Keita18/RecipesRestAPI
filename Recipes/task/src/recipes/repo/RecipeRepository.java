@@ -3,7 +3,7 @@ package recipes.repo;
 import recipes.domain.Recipe;
 
 public interface RecipeRepository {
-    Recipe get();
+    Recipe getRecipe(Long id);
 
-    void add(Recipe recipe);
+    Long add(Recipe recipe);
 }

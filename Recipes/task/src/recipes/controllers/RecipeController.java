@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import recipes.domain.Recipe;
 import recipes.services.RecipeServiceImpl;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api")
 public class RecipeController {
@@ -15,14 +17,19 @@ public class RecipeController {
         this.service = service;
     }
 
-    @GetMapping("/recipe")
-    public ResponseEntity<Recipe> getRecipe() {
-        return ResponseEntity.ok().body(service.getRecipe());
+    @GetMapping("/recipe/{id}")
+    public ResponseEntity<Recipe> getRecipe(@PathVariable final Long id) {
+        Recipe recipe = service.getRecipe(id);
+        if (recipe == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok().body(recipe);
     }
 
-    @PostMapping("/recipe")
-    public ResponseEntity<Recipe> addRecipe(@RequestBody Recipe recipe) {
-        service.saveRecipe(recipe);
-        return ResponseEntity.ok().build();
+    @PostMapping("/recipe/new")
+    public ResponseEntity<Object> addRecipe(@RequestBody Recipe recipe) {
+        System.out.println(recipe.toString());
+        Long id = service.saveRecipe(recipe);
+        return ResponseEntity.ok().body(Map.of("id", id));
     }
 }

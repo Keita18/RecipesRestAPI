@@ -173,9 +173,6 @@ files:
 - name: src/recipes/domain/Recipe.java
   visible: true
   learner_created: true
-- name: src/recipes/repo/dao/Dao.java
-  visible: true
-  learner_created: true
 - name: src/recipes/repo/RecipeRepository.java
   visible: true
   learner_created: true
@@ -191,9 +188,9 @@ files:
 - name: src/recipes/controllers/RecipeController.java
   visible: true
   learner_created: true
-feedback_link: https://hyperskill.org/projects/180/stages/917/implement#comment
+feedback_link: https://hyperskill.org/learn/step/13088#comment
 status: Solved
 feedback:
   message: Congratulations!
   time: Fri, 14 Oct 2022 17:19:43 UTC
-record: -1
+record: 1

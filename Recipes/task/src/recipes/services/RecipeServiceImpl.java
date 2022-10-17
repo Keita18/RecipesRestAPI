@@ -14,12 +14,12 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public void saveRecipe(Recipe recipe) {
-        recipeRepository.add(recipe);
+    public Long saveRecipe(Recipe recipe) {
+        return recipeRepository.add(recipe);
     }
 
     @Override
-    public Recipe getRecipe() {
-        return recipeRepository.get();
+    public Recipe getRecipe(Long id) {
+        return recipeRepository.getRecipe(id);
     }
 }
