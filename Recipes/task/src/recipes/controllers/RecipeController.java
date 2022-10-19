@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.*;
 import recipes.domain.Recipe;
 import recipes.services.RecipeServiceImpl;
 
+import javax.validation.Valid;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/recipe")
 public class RecipeController {
     private final RecipeServiceImpl service;
 
@@ -17,7 +18,7 @@ public class RecipeController {
         this.service = service;
     }
 
-    @GetMapping("/recipe/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Recipe> getRecipe(@PathVariable final Long id) {
         Recipe recipe = service.getRecipe(id);
         if (recipe == null) {
@@ -26,10 +27,20 @@ public class RecipeController {
         return ResponseEntity.ok().body(recipe);
     }
 
-    @PostMapping("/recipe/new")
-    public ResponseEntity<Object> addRecipe(@RequestBody Recipe recipe) {
+    @PostMapping("/new")
+    public ResponseEntity<Object> addRecipe(@Valid @RequestBody Recipe recipe) {
         System.out.println(recipe.toString());
         Long id = service.saveRecipe(recipe);
         return ResponseEntity.ok().body(Map.of("id", id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Recipe> deleteRecipe(@PathVariable final Long id) {
+        boolean existRecipe = service.existRecipe(id);
+        if (!existRecipe) {
+            return ResponseEntity.notFound().build();
+        }
+        service.deleteRecipe(id);
+        return ResponseEntity.noContent().build();
     }
 }

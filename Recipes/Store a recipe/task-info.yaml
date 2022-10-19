@@ -1,58 +1,5 @@
 type: edu
 files:
-- name: src/recipes/RecipesApplication.java
-  visible: true
-  text: |
-    package recipes;
-
-    import org.springframework.boot.SpringApplication;
-    import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-    @SpringBootApplication
-    public class RecipesApplication {
-        public static void main(String[] args) {
-            SpringApplication.run(RecipesApplication.class, args);
-        }
-    }
-  learner_created: false
-- name: src/resources/application.properties
-  visible: true
-  text: |-
-    server.port=8881
-    management.endpoints.web.exposure.include=*
-    management.endpoint.shutdown.enabled=true
-  learner_created: false
-- name: build.gradle
-  visible: true
-  text: |-
-    buildscript {
-        apply plugin: 'hyperskill'
-
-        repositories {
-            mavenCentral()
-        }
-        dependencies {
-            classpath "org.springframework.boot:spring-boot-gradle-plugin:$hs.spring.bootVersion"
-            classpath "io.spring.gradle:dependency-management-plugin:$hs.spring.dependencyManagementVersion"
-        }
-    }
-
-    apply plugin: 'java'
-    apply plugin: 'org.springframework.boot'
-    apply plugin: 'io.spring.dependency-management'
-
-    repositories {
-        mavenCentral()
-    }
-
-    sourceSets.main.resources.srcDirs = ["src/resources"]
-
-    dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter'
-        implementation 'org.springframework.boot:spring-boot-starter-actuator'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
-    }
-  learner_created: false
 - name: test/RecipesApplicationTest.java
   visible: false
   text: |
@@ -308,6 +255,232 @@ files:
         }
     }
   learner_created: false
+- name: src/recipes/repo/RecipeRepository.java
+  visible: true
+  text: |
+    package recipes.repo;
+
+    import recipes.domain.Recipe;
+
+    public interface RecipeRepository {
+        Recipe getRecipe(Long id);
+
+        Long add(Recipe recipe);
+    }
+  learner_created: true
+- name: src/recipes/services/RecipeService.java
+  visible: true
+  text: |
+    package recipes.services;
+
+    import recipes.domain.Recipe;
+
+    interface RecipeService {
+        Long saveRecipe(Recipe recipe);
+
+        Recipe getRecipe(Long id);
+    }
+  learner_created: true
+- name: src/recipes/repo/RecipeRepositoryImpl.java
+  visible: true
+  text: |
+    package recipes.repo;
+
+    import org.springframework.stereotype.Repository;
+    import recipes.domain.Recipe;
+
+    import java.util.HashMap;
+    import java.util.Map;
+
+    @Repository
+    public class RecipeRepositoryImpl implements RecipeRepository {
+        private final Map<Long, Recipe> recipeList = new HashMap<>();
+        private Long id = 0L;
+
+        @Override
+        public Recipe getRecipe(Long id) {
+            return recipeList.get(id);
+        }
+
+        @Override
+        public Long add(Recipe recipe) {
+            id++;
+            Recipe _recipe = new Recipe(
+                    recipe.getName(),
+                    recipe.getDescription(),
+                    recipe.getIngredients(),
+                    recipe.getDirections());
+            recipeList.put(id, _recipe);
+            return id;
+        }
+    }
+  learner_created: true
+- name: src/recipes/controllers/RecipeController.java
+  visible: true
+  text: |
+    package recipes.controllers;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.*;
+    import recipes.domain.Recipe;
+    import recipes.services.RecipeServiceImpl;
+
+    import java.util.Map;
+
+    @RestController
+    @RequestMapping("/api")
+    public class RecipeController {
+        private final RecipeServiceImpl service;
+
+        public RecipeController(@Autowired RecipeServiceImpl service) {
+            this.service = service;
+        }
+
+        @GetMapping("/recipe/{id}")
+        public ResponseEntity<Recipe> getRecipe(@PathVariable final Long id) {
+            Recipe recipe = service.getRecipe(id);
+            if (recipe == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok().body(recipe);
+        }
+
+        @PostMapping("/recipe/new")
+        public ResponseEntity<Object> addRecipe(@RequestBody Recipe recipe) {
+            System.out.println(recipe.toString());
+            Long id = service.saveRecipe(recipe);
+            return ResponseEntity.ok().body(Map.of("id", id));
+        }
+    }
+  learner_created: true
+- name: build.gradle
+  visible: true
+  text: |-
+    buildscript {
+        apply plugin: 'hyperskill'
+
+        repositories {
+            mavenCentral()
+        }
+        dependencies {
+            classpath "org.springframework.boot:spring-boot-gradle-plugin:$hs.spring.bootVersion"
+            classpath "io.spring.gradle:dependency-management-plugin:$hs.spring.dependencyManagementVersion"
+        }
+    }
+
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+
+    repositories {
+        mavenCentral()
+    }
+
+    sourceSets.main.resources.srcDirs = ["src/resources"]
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter'
+        implementation 'org.springframework.boot:spring-boot-starter-actuator'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+    }
+  learner_created: false
+- name: src/resources/application.properties
+  visible: true
+  text: |-
+    server.port=8881
+    management.endpoints.web.exposure.include=*
+    management.endpoint.shutdown.enabled=true
+  learner_created: false
+- name: src/recipes/services/RecipeServiceImpl.java
+  visible: true
+  text: |
+    package recipes.services;
+
+    import org.springframework.beans.factory.annotation.Autowired;
+    import org.springframework.stereotype.Service;
+    import recipes.domain.Recipe;
+    import recipes.repo.RecipeRepository;
+
+    @Service
+    public class RecipeServiceImpl implements RecipeService {
+        private final RecipeRepository recipeRepository;
+
+        public RecipeServiceImpl(@Autowired RecipeRepository recipeRepository) {
+            this.recipeRepository = recipeRepository;
+        }
+
+        @Override
+        public Long saveRecipe(Recipe recipe) {
+            return recipeRepository.add(recipe);
+        }
+
+        @Override
+        public Recipe getRecipe(Long id) {
+            return recipeRepository.getRecipe(id);
+        }
+    }
+  learner_created: true
+- name: src/recipes/repository/RecipeRepository.java
+  visible: true
+  learner_created: true
+- name: src/recipes/RecipesApplication.java
+  visible: true
+  text: |
+    package recipes;
+
+    import org.springframework.boot.SpringApplication;
+    import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+    @SpringBootApplication
+    public class RecipesApplication {
+        public static void main(String[] args) {
+            SpringApplication.run(RecipesApplication.class, args);
+        }
+    }
+  learner_created: false
+- name: src/recipes/domain/entity/RecipeEntity.java
+  visible: true
+  text: |
+    package recipes.domain;
+
+    import lombok.AllArgsConstructor;
+    import lombok.Data;
+    import lombok.NoArgsConstructor;
+
+    import java.util.List;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class Recipe {
+        String name;
+        String description;
+        List<String> ingredients;
+        List<String> directions;
+    }
+  learner_created: true
+- name: src/recipes/domain/Recipe.java
+  visible: true
+  learner_created: true
+- name: src/recipes/domain/entity/IngredientEntity.java
+  visible: true
+  learner_created: true
+- name: src/recipes/domain/entity/DirectionEntity.java
+  visible: true
+  learner_created: true
+- name: src/recipes/repository/DirectionRepository.java
+  visible: true
+  learner_created: true
+- name: src/recipes/repository/IngredientRepository.java
+  visible: true
+  learner_created: true
+- name: src/recipes/domain/Mapper.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/13090#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Wed, 19 Oct 2022 19:50:18 UTC
 record: -1
